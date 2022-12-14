@@ -1,0 +1,94 @@
+---
+title: "STAT414"
+author: "AminahW"
+date: "2022-12-05"
+output: pdf_document
+---
+
+# Binomial Distribution
+
+The built-in function dbinom(x, size, probability) evaluates the probability density function (PDF) for a binomial distribution. For example, below the dbinom() is used to determine the probability of 3 successes in 5 trials (x = 3) given that the probability of a success is 0.2. 
+```{r eval==TRUE}
+#binomial pdf
+dbinom(3,5,0.2)
+```
+We can verify that dbinom() is accurate using the formula for the PDF of a binomial distribution: 
+
+
+```{r eval}
+choose(5,3)*(0.2)^3*(0.8)^2
+```
+The built-in function pbinom(x, size, probability) evaluates the cumulative density function (CDF) for a binomial distribution. For example, below the pbinom() is used to determine the cumulative probability of 3 successes in 5 trials (x = 3) given that the probability of a success is 0.2. 
+```{r eval}
+#binomial cdf
+pbinom(3,5,0.2)
+```
+We can verify that pbinom() is accurate using the formula for the CDF of a binomial distribution: 
+
+```{r eval}
+choose(5,0)*(0.2)^0*(0.8)^(5) + choose(5,1)*(0.2)^1*(0.8)^(4) + choose(5,2)*(0.2)^2*(0.8)^(3) + choose(5,3)*(0.2)^3*(0.8)^(2)
+```
+We can also plot the PDF and CDF.
+```{r eval}
+library(dplyr)
+library(ggplot2)
+
+
+x= 0:10
+plot(pbinom(x,5,0.2), type = "s", main = "CDF Bin ~ (5, 0.2) for x = 0 to x = 10")
+
+
+
+# expectation
+x = c(0, 1, 2, 3)
+prob = dbinom(x,5,0.2)*x
+E = sum(prob)
+
+# variance
+prob2 =dbinom(x,5,0.2)*x^2
+V = sum(prob2)-(sum(prob)^2)
+
+x= 0:10
+plot(dbinom(x,5,0.2), type = "h", main = "PDF Bin ~ (5, 0.2) for x = 0 to x = 10")
+abline(v = E, col = "red")
+
+text(2, 0.35, "Mean = 0.9728", col = "red")
+text(2.2, 0.32, "Variance = 0.7433", col = "blue")
+
+
+```
+# Hypergeometric Distribution
+The built-in function dhyper(x,m,n,k) evaluates the probability density function (PDF) for a hypergeometric distribution. For example, below the dhyper() is used to determine the probability ...(revise later)
+
+```{r eval = TRUE}
+# hypergeometric pdf
+dhyper(2,4,6,5)
+(choose(4,2)*choose(6,3))/choose(10,5)
+
+# hypergeometric cdf
+phyper(2,4,6,5) 
+(choose(4,0)*choose(6,5))/choose(10,5) +(choose(4,1)*choose(6,4))/choose(10,5)+
+(choose(4,2)*choose(6,3))/choose(10,5)
+
+```
+# Poisson Distribrution
+```{r eval=TRUE}
+#Poisson pdf
+dpois(0,5/2)
+(exp(-5/2)*(5/2)^0)/factorial(0)
+
+#Poisson cdf
+ppois(1,5/2)
+(exp(-5/2)*(5/2)^0)/factorial(0) + (exp(-5/2)*(5/2)^1)/factorial(1)
+```
+# Sample Size
+
+Sample size plays a big role in the shape of data.
+```{r eval}
+
+Samples = rbinom(100, 5, 0.2)
+hist(Samples, breaks = 0:5.5, probability = TRUE, main = "Random Samples from Bin(5, 0.2) for x = 100")
+lines(x, dbinom(x,5,0.2), col = "darkgreen", lwd = 2)
+text(2.4, 0.3, "PMF for Bin(5,0.2)", col = "darkgreen")
+
+```
