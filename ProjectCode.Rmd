@@ -104,3 +104,28 @@ lines(x, dbinom(x,5,0.2), col = "darkgreen", lwd = 2)
 text(2.4, 0.3, "PMF for Bin(5,0.2)", col = "darkgreen")
 
 ```
+
+# Relationship Between Distributions
+
+```{r eval}
+
+# Plot the PMFs for each distribution to illustrate their relations.
+
+x <- 0:20
+
+# Probability of x successes in 20 trials with prob 0.5
+binomPMF <- dbinom(x, size=20, prob=0.5)
+
+# Probability of x successes in 100 trials with 200 choices, 50 of them correct.
+hyperPMF <- dhyper(x, m=50, n=450, k=100)
+
+# Probability of x occurances with an occurance rate of 10
+poisPMF <- dpois(x, 10)
+
+
+plot(binomPMF, xlim = c(0, 20), ylim = c(0, 0.25), col='red', type='o')
+points(hyperPMF, xlim = c(0, 20), ylim = c(0, 0.25), col='green', type='o')
+points(poisPMF, xlim = c(0, 20), ylim = c(0, 0.25), col='blue', type='o')
+legend(0, 0.2, legend=c("Binomial", "Hyper Geometric", "Poisson"), 
+       col=c("red", "green", "blue"), lty=1, cex=.75)
+```
