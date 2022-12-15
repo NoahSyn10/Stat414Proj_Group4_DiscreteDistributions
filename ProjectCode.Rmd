@@ -107,21 +107,19 @@ text(2.4, 0.3, "PMF for Bin(5,0.2)", col = "darkgreen")
 
 # Relationship Between Distributions
 
-While each Discrete Distribution has a unique meaning and application, they still have similar foundations, and thus hold observable relationships between each other. For example, we know that the Hypergeometric Distribution applies to a random variable X in a situation where there is a population size of N with m correct choices, and a sample size n chosen *without replacement*. Similarly, the Binomial Distribution applies to random variable X with a sample size of n and a *constant probability* p. Imagine that the Hypergeometric random variable's sample size was modified to be chosen *with replacement*. It is clear that the random variable would then have a Binomial Distribution with sample size n and constant probability p=m/N. Now imagine that the Hypergeometric random variable had a population size so large that taking a sample did not significantly change the ratio m/N. Then the PMF would be very similar to that of a Binomial Distribution with sample size n and probability m/N, as the probability would be *near constant*. In fact, as the population size of a Hypergeometric Distribution approaches infinity, its PMF approaches the PMF of a Binomial Distribution with p=m/N.
+While each Discrete Distribution has a unique meaning and application, they still have similar foundations, and thus hold observable relationships between each other. For example, we know that the Hypergeometric Distribution applies to a random variable X in a situation where there is a population size of N with m correct choices, and a sample size n chosen *without replacement*. Similarly, the Binomial Distribution applies to random variable X with a sample size of n and a *constant probability* p. Imagine that the Hypergeometric random variable's sample size was modified to be chosen *with replacement*. It is clear that the random variable would then have a Binomial Distribution with sample size n and constant probability p=m/N. Now imagine that the Hypergeometric random variable had a population size so large that taking a sample did not significantly change the ratio m/N. Then the PMF would be very similar to that of a Binomial Distribution with sample size n and probability m/N, as the probability would be *near constant*. In fact, as the population size of a Hypergeometric Distribution approaches infinity, its PMF approaches the PMF of a Binomial Distribution with p=m/N. Thanks to this characteristic of the Hypergeometric Distribution, for certain parameters we can actually use the PMF of the Binomial Distribution to approximate that of a Hypergeometric random variable.
 
-This can be illustrated by plotting the PMF of a Hypergeometric Distribution with a population size N and a sample size n much less than N, against the PMF of a Binomial distribution with sample size n and probability p=m/N, m being the number of correct choices in population N.
-
-Lets consider a Hypergeometric Distribution with population N=1000, with m=100 correct choices and a sample size of n=50. We could approximate the PMF of that random variable with a Binomial Distribution with sample size n=50 and probability p=100/1000=0.1
+This can be illustrated by plotting the PMF of a Hypergeometric Distribution with a population size N and a sample size n much less than N against the PMF of a Binomial distribution with sample size n and probability p=m/N, m being the number of correct choices in population N. Lets consider a Hypergeometric Distribution with population N=1000, with m=100 correct choices and a sample size of n=50. We could approximate the PMF of that random variable with a Binomial Distribution with sample size n=50 and probability p=100/1000=0.1
 
 ```{r eval}
 
-# Plot the PMFs for each distribution to illustrate their relations.
+# Plot the PMF of a Hyergeometric Random Variable with the PMF of a Binomial Random Variable that could be used to approximate it
 
 x <- 0:20
 
-N=1000
-m=100
-n=50
+N=1000  # Population size 1000
+m=100   # 100 correct choices
+n=50    # Sample size 50
 
 # Probability of x successes in 50 trials with prob 0.1
 binomPMF <- dbinom(x, n, m/N)
@@ -129,17 +127,69 @@ binomPMF <- dbinom(x, n, m/N)
 # Probability of x successes in 50 trials with 1000 choices, 100 of them correct.
 hyperPMF <- dhyper(x, m, N-m, n)
 
-# Probability of x occurances with an occurance rate of 10
-poisPMF <- dpois(x, 5)
-
-
+# Plot both functions
 plot(hyperPMF, xlim = c(0, 20), ylim = c(0, 0.25), col='black', type='o')
 points(binomPMF, xlim = c(0, 20), ylim = c(0, 0.25), col='red', type='b')
-legend(15, 0.25, legend=c("Binomial", "Hyper Geometric"), 
+legend(15, 0.25, legend=c("Hyper Geometric", "Binomial")
        col=c("black", "red"), lty=1:2, cex=.75)
+```
 
+Similar to how the Hypergeometric PMF can be approximated using the Binomial PMF, a the Binomial PMF can be approximated using the Poisson PMF. We know that a Binomial Distribution applies to a random variable X with sample size n and probability p, and its PMF calculates the probability that X=x successes will occur in the sample size. On the other hand, the Poisson Distribution applies to a random variable X with a success frequency λ over an interval, and its PMF calculates the probability that X=x successes will occur within that interval. If we reimagine the Binomial PMF with the sample size n as an interval [0, n] and frequency λ=n\*p, we can see how the Binomial PMF could be approximated using the Poisson PMF. In fact the Binomial PMF approaches the Poisson PMF as n grows very large and p becomes very small such that λ stays the same.
+
+To illustrate this relationship lets consider a Binomial Distribution with sample size N=100 and probability p=0.05. This could be approximated using a Poisson Distribution if we imagine a range [0, 100] where the frequency of success is λ=100\*0.05=5.
+
+```{r eval}
+
+# Plot the PMF of a Binomial Random Variable with the PMF of a Poisson Random Variable that could be used to approximate it
+
+x <- 0:20
+
+n=100   # Sample size 100
+p=0.05  # Probability 0.05
+
+# Probability of x successes in 50 trials with prob 0.1
+binomPMF <- dbinom(x, n, p)
+
+# Probability of x occurances with an occurance rate of 10
+poisPMF <- dpois(x, n*p)
+
+# Plot both functions
 plot(binomPMF, xlim = c(0, 20), ylim = c(0, 0.25), col='black', type='o')
 points(poisPMF, xlim = c(0, 20), ylim = c(0, 0.25), col='red', type='b')
 legend(15, 0.25, legend=c("Poisson", "Binomial"), 
        col=c("black", "red"), lty=1:2, cex=.75)
+```
+
+Knowing that the Hypergeometric PMF can be approximated with the Binomial PMF and the Binomial PMF can be approximated with the Poisson PMF, we know that under some conditions the Hypergeometric PMF must be able to be approximated by the Poisson PMF. To find those conditions, consider that the Hypergeometric PMF approaches the Binomial PMF when the population size grows very large and the sample size stays significantly smaller, and the Binomial PMF approaches the Poisson PMF when the sample size grows very large and the probability becomes very small. From these conditions we can derive that the Hypergeometric PMF would best approach the Poisson PMF when the both the population and sample size grow very large while the sample size stays a fraction of the population size, and the number of correct options m stays small such that the probability p=m/N will become very small.
+
+Lets consider a Hypergeometric Distribution with Population
+
+```{r}
+
+{r eval}
+
+# Plot the PMF of a Binomial Random Variable with the PMF of a Poisson Random Variable that could be used to approximate it
+
+x <- 0:20
+
+n=100   # Sample size 100
+p=0.05  # Probability 0.05
+
+# Probability of x successes in 50 trials with 1000 choices, 100 of them correct.
+hyperPMF <- dhyper(x, m, N-m, n)
+
+# Probability of x successes in 50 trials with prob 0.1
+binomPMF <- dbinom(x, n, p)
+
+# Probability of x occurances with an occurance rate of 10
+poisPMF <- dpois(x, n*p)
+
+# Plot all three functions
+plot(hyperPMF, xlim = c(0, 20), ylim = c(0, 0.25), col='black', type='o')
+points(binomPMF, xlim = c(0, 20), ylim = c(0, 0.25), col='red', type='b')
+points(poisPMF, xlim = c(0, 20), ylim = c(0, 0.25), col='blue', type='b')
+legend(15, 0.25, legend=c("Poisson", "Binomial"), 
+       col=c("black", "red"), lty=1:2, cex=.75)
+
+
 ```
