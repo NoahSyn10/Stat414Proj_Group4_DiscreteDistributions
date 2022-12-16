@@ -105,6 +105,14 @@ text(2.4, 0.3, "PMF for Bin(5,0.2)", col = "darkgreen")
 
 ```
 
+When we generate 100 samples of the Binomial Distribution and graph a histogram of the results, it is notable that the histogram tends to have a bell curve.
+
+```{r eval}
+samples = rbinom(100, 30, 0.25)
+hist(samples)
+
+```
+
 # Relationship Between Distributions
 
 While each Discrete Distribution has a unique meaning and application, they still have similar foundations, and thus hold observable relationships between each other. For example, we know that the Hypergeometric Distribution applies to a random variable X in a situation where there is a population size of N with m correct choices, and a sample size n chosen *without replacement*. Similarly, the Binomial Distribution applies to random variable X with a sample size of n and a *constant probability* p. Imagine that the Hypergeometric random variable's sample size was modified to be chosen with replacement. It is clear that the random variable would then have a Binomial Distribution with sample size n and constant probability p=m/N. Now imagine that the Hypergeometric random variable had a population size so large that taking a sample did not significantly change the ratio m/N. Then the PMF would be very similar to that of a Binomial Distribution with sample size n and probability m/N, as the probability would be *near constant*. In fact, as the population size of a Hypergeometric Distribution approaches infinity, its PMF approaches the PMF of a Binomial Distribution with p=m/N. Thanks to this characteristic of the Hypergeometric Distribution, for certain parameters we can actually use the PMF of the Binomial Distribution to approximate that of a Hypergeometric random variable.
@@ -194,3 +202,15 @@ legend(15, 0.25, legend=c("Hypergeometric", "Binomial", "Poisson"),
 ```
 
 # Central Limit Theorem
+
+```{r eval}
+
+# Generate 100 samples of a Binomial Distribution and find the mean of the results. Repeat 50 times, and graph the histogram of the 50 means.
+
+means = c() # Init vector to store means
+for(i in 1:50) {
+  samples = rbinom(100, 30, 0.25)
+  means = append(means, mean(samples))
+}
+hist(means)
+```
