@@ -38,71 +38,79 @@ We can also plot the PDF and CDF.
 ```{r eval}
 library(dplyr)
 library(ggplot2)
-
-
 x= 0:10
 plot(pbinom(x,5,0.2), type = "s", main = "CDF Bin ~ (5, 0.2) for x = 0 to x = 10")
-
-
-
 # expectation
 x = c(0, 1, 2, 3)
 prob = dbinom(x,5,0.2)*x
 E = sum(prob)
-
 # variance
 prob2 =dbinom(x,5,0.2)*x^2
 V = sum(prob2)-(sum(prob)^2)
-
 x= 0:10
 plot(dbinom(x,5,0.2), type = "h", main = "PDF Bin ~ (5, 0.2) for x = 0 to x = 10")
 abline(v = E, col = "red")
-
 text(2, 0.35, "Mean = 0.9728", col = "red")
 text(2.2, 0.32, "Variance = 0.7433", col = "blue")
-
-
 ```
 
 # Hypergeometric Distribution
 
-The built-in function dhyper(x,m,n,k) evaluates the probability density function (PDF) for a hypergeometric distribution. For example, below the dhyper() is used to determine the probability ...(revise later)
+The built-in function dhyper(x,m,n,k) evaluates the probability density function (PDF) for a hypergeometric distribution. For example, below the dhyper() is used to determine the probability that out of 5 balls drawn from an urn (without replacement), exactly 2 white balls will be drawn given that the urn contains 4 white balls and 6 black balls. 
 
 ```{r eval = TRUE}
 # hypergeometric pdf
 dhyper(2,4,6,5)
+```
+We can verify that dhyper() is accurate using the formula for the CDF of a hypergeometric distribution:
+``` {r eval}
 (choose(4,2)*choose(6,3))/choose(10,5)
-
+```
+The built-in function phyper(x,m,n,k) evaluates the cumulative density function (CDF) for a hypergeometric distribution. For example, below the phyper() is used to determine the cumulative probability that out of 5 balls drawn from an urn (without replacement), exactly 2 white balls will be drawn given that the urn contains 4 white balls and 6 black balls. 
+```{r eval}
 # hypergeometric cdf
 phyper(2,4,6,5) 
+```
+We can verify that phyper() is accurate using the formula for the CDF of a hypergeometric distribution:
+```{r eval}
 (choose(4,0)*choose(6,5))/choose(10,5) +(choose(4,1)*choose(6,4))/choose(10,5)+
 (choose(4,2)*choose(6,3))/choose(10,5)
-
 ```
-
 # Poisson Distribrution
+
+The built-in function dpois(x,λ) evaluates the probability density function (PDF) for a poisson distribution. For example, below the dpois() is used to determine the probability that an event will occur zero times in a specific time frame given that the rate of occurrence is λ = 5/2.
 
 ```{r eval=TRUE}
 #Poisson pdf
 dpois(0,5/2)
+```
+We can verify that dpois() is accurate using the formula for the PDF of a poisson distribution:
+```{r eval}
 (exp(-5/2)*(5/2)^0)/factorial(0)
+```
+The built-in function ppois(x,λ) evaluates the cumulative density function (CDF) for a poisson distribution. For example, below the ppois() is used to determine the cumulative probability that an event will occur one time in a specific time frame given that the rate of occurrence is λ = 5/2.
 
+```{r eval}
 #Poisson cdf
 ppois(1,5/2)
 (exp(-5/2)*(5/2)^0)/factorial(0) + (exp(-5/2)*(5/2)^1)/factorial(1)
 ```
-
 # Sample Size
 
-Sample size plays a big role in the shape of data.
+Sample size plays a big role in the shape of data. Below is a histogram of 100 i.i.d. samples from a binomial distribution with n = 5 and p = 0.2. It follows the same general shape as a PDF curve of Bin(5,0.2). 
 
 ```{r eval}
-
 Samples = rbinom(100, 5, 0.2)
 hist(Samples, breaks = 0:5.5, probability = TRUE, main = "Random Samples from Bin(5, 0.2) for x = 100")
 lines(x, dbinom(x,5,0.2), col = "darkgreen", lwd = 2)
 text(2.4, 0.3, "PMF for Bin(5,0.2)", col = "darkgreen")
-
+```
+Now, here is a histogram of 4 i.i.d. samples from a binomial distribution with n = 5 and p = 0.2. Because there are less samples, the data doesn't follow the same general shape as a PDF curve of Bin(5,0.2) as well as the histogram with 100 samples. The shape will very widely every time the code is ran. 
+```{r eval}
+Samples = rbinom(4, 5, 0.2)
+hist(Samples, breaks = 0:5.5, probability = TRUE, main = "Random Samples from Bin(5, 0.2) for x = 4")
+lines(x, dbinom(x,5,0.2), col = "darkgreen", lwd = 2)
+text(2.4, 0.3, "PMF for Bin(5,0.2)", col = "darkgreen")
 ```
 
 When we generate 100 samples of the Binomial Distribution and graph a histogram of the results, it is notable that the histogram tends to have a bell curve.
